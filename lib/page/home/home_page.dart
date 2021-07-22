@@ -4,6 +4,8 @@ import 'package:exam_dot_mobile/utils/app_colors.dart';
 import 'package:exam_dot_mobile/utils/navigation.dart';
 import 'package:exam_dot_mobile/utils/v_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -15,6 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends BaseStateful<HomePage, SpendState> {
   BorderRadiusGeometry borderRadius = BorderRadius.circular(12);
 
+  final formatCurrency = new NumberFormat.simpleCurrency(locale: 'id_ID');
   List<BoxShadow> shadow = [
     BoxShadow(
       color: Colors.grey.withOpacity(0.5),
@@ -32,7 +35,9 @@ class _HomePageState extends BaseStateful<HomePage, SpendState> {
         child: Icon(Icons.add),
         backgroundColor: AppColors.blue,
         onPressed: () {
-          Navigation().addSpending(state);
+          Navigation().addSpending(state, () {
+            state.init(context);
+          });
         },
       ),
       body: SingleChildScrollView(
@@ -47,9 +52,6 @@ class _HomePageState extends BaseStateful<HomePage, SpendState> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 35,
-                  ),
                   VText(
                     "Halo, User!",
                     color: AppColors.grey1,
@@ -89,7 +91,7 @@ class _HomePageState extends BaseStateful<HomePage, SpendState> {
                               height: 14,
                             ),
                             VText(
-                              "Rp. 30.000",
+                              '${formatCurrency.format(state.nominalToday)}',
                               fontSize: 18,
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
@@ -119,7 +121,7 @@ class _HomePageState extends BaseStateful<HomePage, SpendState> {
                               height: 14,
                             ),
                             VText(
-                              "Rp. 300.000",
+                              '${formatCurrency.format(state.nominalTomorrow)}',
                               fontSize: 18,
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
@@ -140,10 +142,10 @@ class _HomePageState extends BaseStateful<HomePage, SpendState> {
               ),
             ),
             Container(
-              height: 120,
+              height: 140,
               width: double.infinity,
               child: ListView.builder(
-                padding: EdgeInsets.only(left: 20),
+                padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
                 itemBuilder: (c, i) => Container(
                   padding: EdgeInsets.all(16),
                   margin: EdgeInsets.only(right: 20),
@@ -152,11 +154,15 @@ class _HomePageState extends BaseStateful<HomePage, SpendState> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      IconCircleSVG(
+                        color: state.listSpendCategory[i].color,
+                        svgName: state.listSpendCategory[i].logo,
+                      ),
                       SizedBox(
                         height: 12,
                       ),
                       VText(
-                        "Makanan",
+                        state.listSpendCategory[i].name,
                         color: AppColors.grey3,
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
@@ -164,11 +170,11 @@ class _HomePageState extends BaseStateful<HomePage, SpendState> {
                       SizedBox(
                         height: 8,
                       ),
-                      VText("Rp. 70.000")
+                      VText('${formatCurrency.format(state.listSpendCategory[i].nominal)}')
                     ],
                   ),
                 ),
-                itemCount: 3,
+                itemCount: state.listSpendCategory.length,
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
               ),
@@ -193,18 +199,31 @@ class _HomePageState extends BaseStateful<HomePage, SpendState> {
                           borderRadius: borderRadius, boxShadow: shadow, color: Colors.white),
                       child: Row(
                         children: [
+                          SvgPicture.asset(
+                            state.listSpendToday[i].category.logo,
+                            color: Color(state.listSpendToday[i].category.color),
+                          ),
+                          SizedBox(
+                            width: 16,
+                          ),
                           Expanded(
                             child: VText(
-                              "Ayam Geprek",
+                              state.listSpendToday[i].name,
                               color: AppColors.grey1,
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                             ),
-                          )
+                          ),
+                          VText(
+                            '${formatCurrency.format(state.listSpendToday[i].nominal)}',
+                            color: AppColors.grey1,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ],
                       ),
                     ),
-                    itemCount: 2,
+                    itemCount: state.listSpendToday.length,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                   ),
@@ -220,18 +239,31 @@ class _HomePageState extends BaseStateful<HomePage, SpendState> {
                           borderRadius: borderRadius, boxShadow: shadow, color: Colors.white),
                       child: Row(
                         children: [
+                          SvgPicture.asset(
+                            state.listSpendTomorrow[i].category.logo,
+                            color: Color(state.listSpendTomorrow[i].category.color),
+                          ),
+                          SizedBox(
+                            width: 16,
+                          ),
                           Expanded(
                             child: VText(
-                              "Ayam Geprek",
+                              state.listSpendTomorrow[i].name,
                               color: AppColors.grey1,
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                             ),
-                          )
+                          ),
+                          VText(
+                            '${formatCurrency.format(state.listSpendTomorrow[i].nominal)}',
+                            color: AppColors.grey1,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ],
                       ),
                     ),
-                    itemCount: 1,
+                    itemCount: state.listSpendTomorrow.length,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                   ),

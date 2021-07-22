@@ -20,7 +20,7 @@ class DBSpendAdapter extends TypeAdapter<DBSpend> {
       ..name = fields[0] as String
       ..time = fields[1] as DateTime
       ..category = fields[2] as Category
-      ..nominal = fields[3] as String;
+      ..nominal = fields[3] as int;
   }
 
   @override

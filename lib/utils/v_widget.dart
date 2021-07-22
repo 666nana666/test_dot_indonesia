@@ -1,5 +1,6 @@
 import 'package:exam_dot_mobile/utils/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class VText extends StatelessWidget {
   final dynamic title;
@@ -39,5 +40,25 @@ class VText extends StatelessWidget {
       textAlign: align,
       maxLines: maxLines,
     );
+  }
+}
+
+
+class IconCircleSVG extends StatelessWidget {
+  final String svgName;
+  final int color;
+  const IconCircleSVG({Key key, this.svgName, this.color}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return
+      Container(
+        decoration: BoxDecoration(
+          color: Color( color),
+          borderRadius: BorderRadius.circular(72),
+        ),
+        padding: EdgeInsets.all(6),
+        child: SvgPicture.asset(svgName),
+      );
   }
 }

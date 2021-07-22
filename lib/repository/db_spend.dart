@@ -15,6 +15,6 @@ class DBSpend extends HiveObject {
   Category category;
 
   @HiveField(3)
-  String nominal;
+  int nominal= 0;
 
 }

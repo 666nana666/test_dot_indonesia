@@ -22,7 +22,7 @@ class _AddSpendPageState extends BaseStateful<AddSpendPage, SpendState> {
 
   DateTime dateTime;
   TextEditingController date;
-  TextEditingController nominal =MaskedTextController(mask: 'Rp. 000.000.000', text: 'Rp. 0');
+  TextEditingController nominal = MaskedTextController(mask: 'Rp. 000.000.000', text: 'Rp. 0');
 
   @override
   Widget body(Widget child) {
@@ -49,7 +49,11 @@ class _AddSpendPageState extends BaseStateful<AddSpendPage, SpendState> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              textFormField(hint: "Nama Pengeluaran", controller: name, enable: true),
+              textFormField(
+                hint: "Nama Pengeluaran",
+                controller: name,
+                enable: true,
+              ),
               InkWell(
                 onTap: () async {
                   await showModalBottomSheet(
@@ -101,13 +105,9 @@ class _AddSpendPageState extends BaseStateful<AddSpendPage, SpendState> {
                                   itemBuilder: (BuildContext context, int index) => InkWell(
                                         child: Column(
                                           children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                color: Color(state.category[index].color),
-                                                borderRadius: BorderRadius.circular(72),
-                                              ),
-                                              padding: EdgeInsets.all(6),
-                                              child: SvgPicture.asset(state.category[index].logo),
+                                            IconCircleSVG(
+                                              color: state.category[index].color,
+                                              svgName: state.category[index].logo,
                                             ),
                                             SizedBox(
                                               height: 4,
@@ -161,7 +161,7 @@ class _AddSpendPageState extends BaseStateful<AddSpendPage, SpendState> {
                   );
 
                   if (dateResult != null) {
-                    dateTime  = dateResult;
+                    dateTime = dateResult;
                     date.text =
                         VUtils.dateConvert(dateResult.toString(), DateFormat.FORMAT_DD_MMM_YYYY);
                     setState(() {});
@@ -175,15 +175,14 @@ class _AddSpendPageState extends BaseStateful<AddSpendPage, SpendState> {
                       color: AppColors.grey4,
                     )),
               ),
-              textFormField(hint: "Nominal",enable: true, controller: nominal),
+              textFormField(hint: "Nominal",number: true, enable: true, controller: nominal),
               PrimaryButton(
                 text: "Simpan",
-                onTap: (){
-
-                  state.addSpend(name.text, state.selecetedCatagory, dateTime, nominal.text, context);
+                onTap: () {
+                  state.addSpend(
+                      name.text, state.selecetedCatagory, dateTime, nominal.text, context);
                 },
                 enabled: simpan,
-
               )
             ],
           ),
@@ -198,7 +197,8 @@ class _AddSpendPageState extends BaseStateful<AddSpendPage, SpendState> {
       @required String hint,
       Widget rightWidget,
       Color color,
-      bool enable = false}) {
+      bool enable = false,
+      bool number = false}) {
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       decoration: boxDecoration(),
@@ -217,8 +217,7 @@ class _AddSpendPageState extends BaseStateful<AddSpendPage, SpendState> {
             Expanded(
               child: TextField(
                 controller: controller,
-
-                keyboardType: TextInputType.number,
+                keyboardType: number  ? TextInputType.number : TextInputType.text,
                 decoration: InputDecoration(
                     hintText: hint,
                     contentPadding: EdgeInsets.zero,
@@ -241,20 +240,19 @@ class _AddSpendPageState extends BaseStateful<AddSpendPage, SpendState> {
     date = TextEditingController();
 
     nominal.addListener(() {
-      if(nominal.text.length >= 5){
+      if (nominal.text.length >= 5) {
         simpan = true;
-      }else{
+      } else {
         simpan = false;
       }
-      setState(() {
-
-      });
+      setState(() {});
     });
 
     // TODO: implement onStart
   }
 
   bool simpan = false;
+
   Decoration boxDecoration() {
     return BoxDecoration(
         borderRadius: BorderRadius.circular(6),
